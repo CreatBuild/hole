@@ -8,8 +8,11 @@
 
 #define BUF_SIZE 500
 
-const char *IP ="54.65.203.95";
-const char *PORT = "8021";
+#define DEFAULT_IP "54.65.203.95"
+#define DEFAULT_PORT "8021"
+
+static char *IP = DEFAULT_IP;
+static char *PORT = DEFAULT_PORT;
 
 int parser(char *buf)
 {
