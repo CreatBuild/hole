@@ -58,9 +58,10 @@ int main(int argc, char **args)
   /* recv */
   struct sockaddr_in client_addr;
   socklen_t client_addr_len = sizeof(client_addr);
-  char buf_hello[100] = {0};
   
   while(1) {
+    char recv_buf[100] = {0};
+
     /* select */
     #define FDSET_MAX 10
     static fdset_array[FDSET_MAX];
@@ -101,14 +102,14 @@ int main(int argc, char **args)
     }
     
     if (FD_ISSET(server_fd, &fdset)) {
-      ssize_t recv_size = recvfrom(server_fd, buf_hello, sizeof(buf_hello)-1, MSG_TRUNC,
+      ssize_t recv_size = recvfrom(server_fd, recv_buf, sizeof(recv_buf)-1, MSG_TRUNC,
 				   (struct sockaddr *)&client_addr,
 				   &client_addr_len);
       
       if (recv_size != 0) {
 	printf("recvfrom,[IP:port]%s:%d,datasize=%d,data:%s\n", 
 	       inet_ntoa(client_addr.sin_addr), client_addr.sin_port,
-	       (int)recv_size, buf_hello);
+	       (int)recv_size, recv_buf);
       } else {
 	printf("%s:%d exit or space!\n", inet_ntoa(client_addr.sin_addr), client_addr.sin_port);
       }
