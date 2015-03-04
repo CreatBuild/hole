@@ -116,7 +116,8 @@ int main(int argc, char **args)
       ssize_t recv_size = recvfrom(server_fd, recv_buf, sizeof(recv_buf)-1, MSG_TRUNC,
 				   (struct sockaddr *)&client_addr,
 				   &client_addr_len);
-      
+      append_client_tolist(client_addr);
+
       if (recv_size != 0) {
 	printf("recvfrom,[IP:port]%s:%d,datasize=%d,data:%s\n", 
 	       inet_ntoa(client_addr.sin_addr), client_addr.sin_port,
