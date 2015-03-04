@@ -17,7 +17,16 @@
 int server_fd;
 uint16_t server_port = 8021;
 
-int parser(char *buf)
+int parser_readline(char *buf)
+{
+  switch(buf[0]) {
+  case 'l':
+    break;
+  default:break;
+  }
+}
+
+int parser_recv(char *buf)
 {
   switch(buf[0]) {
   case 'l':
@@ -99,7 +108,7 @@ int main(int argc, char **args)
     
     if (FD_ISSET(0, &fdset)) {
       char *buf = readline("cmd>");
-      parser(buf);
+      parser_readline(buf);
       free(buf);
     }
     
@@ -112,6 +121,7 @@ int main(int argc, char **args)
 	printf("recvfrom,[IP:port]%s:%d,datasize=%d,data:%s\n", 
 	       inet_ntoa(client_addr.sin_addr), client_addr.sin_port,
 	       (int)recv_size, recv_buf);
+	parser_recv(recv_buf);
       } else {
 	printf("%s:%d exit or space!\n", inet_ntoa(client_addr.sin_addr), client_addr.sin_port);
       }
