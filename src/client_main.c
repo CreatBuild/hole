@@ -14,14 +14,30 @@
 static char *IP = DEFAULT_IP;
 static char *PORT = DEFAULT_PORT;
 
-int parser(char *buf)
+int parser_args(int argc, char **argv)
 {
-  switch(buf[0]) {
-  case 'l':
-    
-    break;
-  default:break;
+  
+}
+
+char *parser(char *buf)
+{
+  struct {
+    char s;
+    char *command;
+  }command_list[] = {
+    {'l', "list"},
+  };
+
+  char *ret = "null";
+
+  int i = 0;
+  for (i = 0; i < sizeof(command_list)/sizeof(command_list[0]); i++) {
+    if (buf[0] == command_list[i].s) {
+      ret = command_list[i].command;
+    }
   }
+
+  return ret;
 }
 
 int
@@ -38,6 +54,7 @@ main(int argc, char *argv[])
     fprintf(stderr, "Usage: %s host port msg...\n", argv[0]);
     exit(EXIT_FAILURE);
   }
+  parser_args(argc, argv);
 
   /* Obtain address(es) matching host/port */
 
@@ -123,8 +140,8 @@ main(int argc, char *argv[])
     
     if (FD_ISSET(0, &fdset)) {
       char *buf = readline("cmd>");
-      //parser(buf);
-      write(sfd, buf, strlen(buf));
+      char *command = parser(buf);
+      write(sfd, command, strlen(command));
       free(buf);
     }
     
@@ -143,11 +160,11 @@ main(int argc, char *argv[])
 	printf("recvfrom,[IP:port]%s:%d\n", dot_ip, client_addr.sin_port);
       }
 
-      char sendto_buf[100];
-      sprintf(sendto_buf, "you are %s:%d", dot_ip, client_addr.sin_port);
-      ret = sendto(server_fd, sendto_buf, strlen(sendto_buf), 0, (struct sockaddr*)&client_addr, client_addr_len);
+      //char sendto_buf[100];
+      //sprintf(sendto_buf, "you are %s:%d", dot_ip, client_addr.sin_port);
+      //ret = sendto(server_fd, sendto_buf, strlen(sendto_buf), 0, (struct sockaddr*)&client_addr, client_addr_len);
     }
-      sleep(1);
+    //sleep(1);
   }
 
   exit(EXIT_SUCCESS);
