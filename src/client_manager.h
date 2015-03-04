@@ -10,4 +10,4 @@
 
 int append_client_tolist(const struct sockaddr_in clientaddr);
 int delete_client_fromlist(const struct sockaddr_in clientaddr);
-int show_client_fromlist();
+char* show_client_fromlist();

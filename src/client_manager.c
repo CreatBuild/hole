@@ -55,12 +55,20 @@ int delete_client_fromlist(const struct sockaddr_in clientaddr)
   }
 }  
 
-int show_client_fromlist()
+char* show_client_fromlist()
 {
+  static char show_buffer[500];
+
+  int index = 0;
   int i = 0;
   for (i = 0; i < CLIENT_MAX; i++) {
     if (clients[i].flag_use != 0) {
-      printf("%d, %s:%d\n", i, inet_ntoa(clients[i].client_sockaddr.sin_addr), clients[i].client_sockaddr.sin_port);
+      
+      sprintf(show_buffer+index, "%d, %s:%d\n", i, inet_ntoa(clients[i].client_sockaddr.sin_addr), clients[i].client_sockaddr.sin_port);
+      index = strlen(show_buffer);
     }
   }
+  //printf(show_buffer);
+  
+  return show_buffer;
 }

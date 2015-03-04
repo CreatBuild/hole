@@ -12,6 +12,8 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
+#include "client_manager.h"
+
 int server_fd;
 uint16_t server_port = 8021;
 
@@ -19,7 +21,7 @@ int parser(char *buf)
 {
   switch(buf[0]) {
   case 'l':
-    
+    printf(show_client_fromlist());
     break;
   default:break;
   }
