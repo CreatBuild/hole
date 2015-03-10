@@ -152,7 +152,7 @@ main(int argc, char *argv[])
 			perror("select");
 			break;
 		} else if (ret == 0) {
-			printf("30s timeout\n");
+			printf("60s timeout\n");
 			continue;
 		}
     
