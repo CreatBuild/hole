@@ -125,7 +125,7 @@ main(int argc, char *argv[])
 			}
 		}
 		/* timeout setting */
-		tv.tv_sec = 30;/* 30s */
+		tv.tv_sec = 60;/* 60s */
 		tv.tv_usec = 0;
     
 		/* select support */
