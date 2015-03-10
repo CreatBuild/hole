@@ -34,6 +34,24 @@ char *parser(char *buf)
 	for (i = 0; i < sizeof(command_list)/sizeof(command_list[0]); i++) {
 		if (buf[0] == command_list[i].s) {
 			ret = command_list[i].command;
+			break;
+		}
+	}
+
+	if (sizeof(command_list)/sizeof(command_list[0]) == i) {
+		const char *flag = "to";
+		if (0 == memcmp(buf, flag, strlen(flag))) {
+			char ip[16] = {0};
+			char port[10] = {0};
+			// do not send to server
+
+			sscanf(&buf[strlen(flag)], "%s %s", ip, port);
+			printf("sendto, ip:%s, port:%s\n", ip, port);
+			sendto_ip_port_msg(ip, atoi(port), "hello client\n");
+
+			return 0;
+		} else {
+			printf("!=0\n");
 		}
 	}
 
@@ -141,7 +159,9 @@ main(int argc, char *argv[])
 		if (FD_ISSET(0, &fdset)) {
 			char *buf = readline("cmd>");
 			char *command = parser(buf);
-			write(sfd, command, strlen(command));
+			if (command) {
+				write(sfd, command, strlen(command));
+			}
 			free(buf);
 		}
     
@@ -168,4 +188,32 @@ main(int argc, char *argv[])
 	}
 
 	exit(EXIT_SUCCESS);
+}
+
+int sendto_ip_port_msg(char *ip, int port, char *msg)
+{
+	printf("sendto_ip_port_msg, %s:%d, %s\n", ip, port, msg);
+
+	int fd, numbytes; /* files descriptors */
+	struct hostent *he; /* structure that will get information about remote host */
+	struct sockaddr_in server,client; /* server's address information */
+
+	if ((he=gethostbyname(ip))==NULL){ /* calls gethostbyname() */
+		printf("gethostbyname() error\n");
+		return -1;
+	}
+
+	if ((fd=socket(AF_INET, SOCK_DGRAM, 0))==-1){ /* calls socket() */
+		printf("socket() error\n");
+		return -2;
+	}
+
+	bzero(&server, sizeof(server));
+	server.sin_family = AF_INET;
+	server.sin_port = htons(port); /* htons() is needed again */
+	server.sin_addr = *((struct in_addr *)he->h_addr); /*he->h_addr passes "*he"'s info to "h_addr" */
+
+	sendto(fd, msg, strlen(msg), 0, (struct sockaddr *)&server, sizeof(struct sockaddr_in));
+
+	close(fd); /* close fd */
 }
